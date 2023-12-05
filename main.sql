@@ -60,6 +60,41 @@ SELECT p.date, c.name AS client, p.amount AS amount, pm.name AS name
 	   FROM payments p 
        JOIN clients c USING (client_id)
        JOIN payment_methods pm ON p.payment_method = pm.payment_method_id;
+       
+SELECT * FROM shippers sh, products p;
+SELECT * FROM shippers sh CROSS JOIN products p;
+
+SELECT customer_id, first_name, points, 'GOLD' 
+       AS type FROM customers 
+       WHERE points > 3000 UNION
+SELECT customer_id, first_name, points, 'SILVER' 
+	   AS type FROM customers 
+       WHERE points >= 2000 AND points < 3000 UNION
+SELECT customer_id, first_name, points, 'BRONZE' 
+       AS type FROM customers 
+       WHERE points < 2000 
+       ORDER BY first_name;
+
+INSERT INTO products 
+	   VALUES (DEFAULT, 'Injera', 200, 1.5),
+       (DEFAULT, 'SamSung TV', 15, 20.0),
+       (DEFAULT, 'LG Fridge', 12, 35.9);
+       
+CREATE TABLE invoices_archived AS
+SELECT c.client_id, c.name, i.invoice_total, i.payment_total, i.payment_date 
+	   FROM invoices i 
+       JOIN clients c 
+       USING (client_id) 
+       WHERE i.payment_date IS NOT NULL;
+       
+UPDATE customers 
+	   SET points = points + 50
+       WHERE birth_date < '1990-01-01';
+       
+UPDATE orders
+	   SET comments = '!! GOLDEN CUSTOMER !!'
+       WHERE customer_id IN (SELECT customer_id FROM customers WHERE points >= 3000);
+
 # I hope you found this helpful❤
 
 # Stay Awake
